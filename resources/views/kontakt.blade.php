@@ -11,9 +11,26 @@
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+    </style>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     @include('layouts.navbar')
 
@@ -31,7 +48,7 @@
     </header>
 
     <!-- Main Content-->
-    <main class="mb-4">
+    <main class="mb-4 flex-grow-1">
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7 text-center">

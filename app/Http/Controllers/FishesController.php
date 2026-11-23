@@ -75,7 +75,7 @@ class FishesController extends Controller
             'fish_species' => 'required',
             'catch_weight' => 'required|min:0|regex:/^[0-9]+([\.,][0-9]+)?$/',
             'catch_date' => 'required|date',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $fish->location = $request->input('location');
@@ -83,8 +83,11 @@ class FishesController extends Controller
         $weight = $request->input('catch_weight');
         $fish->catch_weight = str_replace(',', '.', $weight);
         $fish->catch_date = $request->input('catch_date');
-        $photoPath = $request->file('photo')->store('images', 'public');
-        $fish->photo_path = $photoPath;
+        
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('images', 'public');
+            $fish->photo_path = $photoPath;
+        }
 
         if($fish->save()) {
             return redirect()->route('fishes');

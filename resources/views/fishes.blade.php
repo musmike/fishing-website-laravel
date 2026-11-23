@@ -50,7 +50,7 @@
 
     <!-- Page Header -->
     <header class="masthead"
-        style="background-image: url('https://hellscanyon.tours/wp-content/uploads/2022/01/juuecjFGH9jBtHvxypTn0Ih8tCMJQeO81640790223-1080x675.jpg')">
+        style="background-image: url('{{ asset('assets/header_images/Bass-Catch.jpg') }}')">
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
@@ -71,9 +71,14 @@
         <div class="card-container">
             @foreach($fishes as $fish)
                 <div class="card">
-
-                    <img src="{{ URL::to('/') }}/storage/{{$fish->photo_path }}" alt="{{ $fish->fish_species}}"
-                        class="card-img-top">
+                    @php
+                        $photoSrc = $fish->photo_path;
+                        if (!\Illuminate\Support\Str::startsWith($photoSrc, ['http://', 'https://'])) {
+                            $photoSrc = asset('storage/' . ltrim($photoSrc, '/'));
+                        }
+                    @endphp
+                    <img src="{{ $photoSrc }}" alt="{{ $fish->fish_species }}"
+                        class="card-img-top" style="height: 260px; object-fit: cover; width: 100%;">
 
                     <div class="card-body">
 

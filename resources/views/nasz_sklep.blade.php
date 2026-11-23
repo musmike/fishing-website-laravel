@@ -17,16 +17,33 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/lightbox.js"></script>
     <link rel="stylesheet" href="css/lightbox.css">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+    </style>
 	
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     @include('layouts.navbar')
 
     <!-- Page Header-->
 	<header class="masthead"
-		style="background-image: url('https://www.willeyssportscenter.com/images/fishing/fishing-top-1920.jpg')">
+		style="background-image: url('{{ asset('assets/img/fishing-header.jpg') }}')">
 		<div class="container position-relative px-4 px-lg-5">
 			<div class="row gx-4 gx-lg-5 justify-content-center">
 				<div class="col-md-10 col-lg-8 col-xl-7">
@@ -40,7 +57,7 @@
 	</header>
 
     <!-- Main Content-->
-    <main class="mb-4">
+    <main class="mb-4 flex-grow-1">
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
 
@@ -93,56 +110,14 @@
             </div>
 
 			<div class="row gx-4 gx-lg-5">
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image1.jpg" data-lightbox="galeria" data-title="Obraz 1">
-						<img src="assets/img/nasz_sklep/image1.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 1">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image2.jpg" data-lightbox="galeria" data-title="Obraz 2">
-						<img src="assets/img/nasz_sklep/image2.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 2">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image3.jpg" data-lightbox="galeria" data-title="Obraz 3">
-						<img src="assets/img/nasz_sklep/image3.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 3">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image4.jpg" data-lightbox="galeria" data-title="Obraz 4">
-						<img src="assets/img/nasz_sklep/image4.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 4">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image5.jpg" data-lightbox="galeria" data-title="Obraz 5">
-						<img src="assets/img/nasz_sklep/image5.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 5">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image6.jpg" data-lightbox="galeria" data-title="Obraz 6">
-						<img src="assets/img/nasz_sklep/image6.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 6">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image7.jpg" data-lightbox="galeria" data-title="Obraz 7">
-						<img src="assets/img/nasz_sklep/image7.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 7">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image8.jpg" data-lightbox="galeria" data-title="Obraz 8">
-						<img src="assets/img/nasz_sklep/image8.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 8">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image9.jpg" data-lightbox="galeria" data-title="Obraz 9">
-						<img src="assets/img/nasz_sklep/image9.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 9">
-					</a>
-				</div>
-				<div class="col-4 mb-4">
-					<a href="assets/img/nasz_sklep/image10.jpg" data-lightbox="galeria" data-title="Obraz 10">
-						<img src="assets/img/nasz_sklep/image10.jpg" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz 10">
-					</a>
-				</div>
+				@for ($i = 1; $i <= 10; $i++)
+					<div class="col-4 mb-4">
+						<a href="{{ asset('assets/img/nasz_sklep/image' . $i . '.jpg') }}" data-lightbox="galeria" data-title="Obraz {{ $i }}">
+							<img src="{{ asset('assets/img/nasz_sklep/image' . $i . '.jpg') }}" class="w-100 shadow-1-strong rounded mb-4" alt="Obraz {{ $i }}" style="height: 250px; object-fit: cover; width: 100%; display: block;">
+						</a>
+					</div>
+				@endfor
+			</div>
 			</div>
         </div>
     </main>

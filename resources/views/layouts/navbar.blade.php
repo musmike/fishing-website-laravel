@@ -22,7 +22,7 @@
                   <!-- Użytkownik jest zalogowany -->
                   <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
-                           <a class="nav-link dropdown-toggle font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           <a class="nav-link dropdown-toggle font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               {{ Auth::user()->name }}
                            </a>
                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -40,9 +40,9 @@
                @else
                   <!-- Użytkownik nie jest zalogowany -->
                   <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a href="{{ route('login') }}" class="nav-link font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Zaloguj</a></li>
+                        <li class="nav-item"><a href="{{ route('login') }}" class="nav-link font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Zaloguj</a></li>
                         @if (Route::has('register'))
-                           <li class="nav-item"><a href="{{ route('register') }}" class="nav-link font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Zarejestruj</a></li>
+                           <li class="nav-item"><a href="{{ route('register') }}" class="nav-link font-semibold text-gray-600 hover:text-gray-900 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Zarejestruj</a></li>
                         @endif
                   </ul>
                @endauth

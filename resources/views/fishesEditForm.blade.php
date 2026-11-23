@@ -106,8 +106,19 @@
                         <label for="catch_date">Data połowu:</label>
                         <input type="date" id="catch_date" name="catch_date" required value='{{$fish->catch_date}}'>
 
-                        <label for="photo">Zdjęcie połowu:</label>
-                        <input type="file" id="photo" name="photo" required>
+                        <label for="photo">Zdjęcie połowu (opcjonalnie, pozostaw puste, aby zachować obecne):</label>
+                        @if($fish->photo_path)
+                            <div class="mb-2">
+                                @php
+                                    $photoSrc = $fish->photo_path;
+                                    if (!\Illuminate\Support\Str::startsWith($photoSrc, ['http://', 'https://'])) {
+                                        $photoSrc = asset('storage/' . ltrim($photoSrc, '/'));
+                                    }
+                                @endphp
+                                <img src="{{ $photoSrc }}" alt="{{ $fish->fish_species }}" style="max-height: 120px; border-radius: 4px; display: block; margin-bottom: 8px;">
+                            </div>
+                        @endif
+                        <input type="file" id="photo" name="photo">
                     </div>
                 </div>
             </div>

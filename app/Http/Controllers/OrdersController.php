@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Session;
 
 class OrdersController extends Controller
 {
+    public function index()
+    {
+        $orders = auth()->check()
+            ? (auth()->user()->status === 'admin'
+                ? Order::with('user')->orderBy('created_at', 'desc')->get()
+                : Order::where('user_id', auth()->id())->orderBy('created_at', 'desc')->get())
+            : collect();
+
+        return view('ordersForm', ['orders' => $orders]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

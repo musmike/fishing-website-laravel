@@ -8,10 +8,20 @@ use App\Models\User;
 
 class Fish extends Model
 {
+    use HasFactory;
+
+    protected $table = 'fishes';
+
+    protected $fillable = [
+        'user_id',
+        'location',
+        'fish_species',
+        'catch_weight',
+        'catch_date',
+        'photo_path',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
-
-    protected $table = 'fishes';
-    use HasFactory;
 }

@@ -6,17 +6,21 @@ use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\FishesController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\SwaggerController;
 
+// Swagger UI Documentation
+Route::get('/swagger', [SwaggerController::class, 'index'])->name('swagger.index');
+Route::get('/api/documentation', [SwaggerController::class, 'index']);
+Route::get('/swagger.json', [SwaggerController::class, 'json'])->name('swagger.json');
 
+// Web Pages
 Route::get('/', [PostController::class, 'index']);
 Route::get('/nasz_sklep', function () {
     return view('nasz_sklep');
 });
 Route::get('/fishes', [FishesController::class, 'index'])->name("fishes");
 Route::get('/comments', [CommentsController::class, 'index'])->name("comments");
-Route::get('/orders', function () {
-    return view('ordersForm');
-})->name("ordersForm");
+Route::get('/orders', [OrdersController::class, 'index'])->name("ordersForm");
 Route::get('/kontakt', function () {
     return view('kontakt');
 });
@@ -26,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    //ryby
+    // ryby
     Route::get('/createFish', [FishesController::class, 'create'])->name("createFish");
     Route::post('/createFish', [FishesController::class, 'store'])->name("storeFish");
     Route::get('/deleteFish/{id}', [FishesController::class, 'destroy'])->name('deleteFish');
@@ -40,15 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/edit/{id}', [CommentsController::class,'edit'])->name('edit');
     Route::post('/update/{id}', [CommentsController::class,'update'])->name('update');
 
-    //zamowienia
+    // zamowienia
     Route::post('/createOrder', [OrdersController::class, 'store'])->name('storeOrder');
 });
 
-//posty
+// posty
 Route::get('/get-more-posts', [PostController::class, 'getMorePosts']);
 Route::get('/post/{id}', [PostController::class, 'show'])->name('showPost');
 
 require __DIR__.'/auth.php';
-
-
-

@@ -20,11 +20,26 @@
             background-repeat: no-repeat;
             transition: background-image 1s ease-in-out;
         }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container.flex-grow-1 {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            margin-top: auto;
+        }
     </style>
 	
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     @include('layouts.navbar')
 
@@ -44,7 +59,7 @@
 	</header>
 
 	<!-- Main Content-->
-	<div class="container px-4 px-lg-5">
+	<div class="container px-4 px-lg-5 flex-grow-1">
 		<div class="row gx-4 gx-lg-5 justify-content-center">
 			<div class="col-md-10 col-lg-8 col-xl-7" id="posty">
 

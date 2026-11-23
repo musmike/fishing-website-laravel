@@ -28,11 +28,26 @@
             justify-content: flex-end;
             align-items: center;
         }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container.flex-grow-1 {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            margin-top: auto;
+        }
     </style>
 
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     @include('layouts.navbar')
 
@@ -51,7 +66,7 @@
     </header>
 
 
-    <div class="container my-4">
+    <div class="container my-4 flex-grow-1">
 
         @auth
             <div class="footer-button">

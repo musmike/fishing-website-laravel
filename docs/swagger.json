@@ -1,0 +1,640 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fishing Website API (Laravel)",
+    "description": "Interactive REST API documentation for the Fishing Website (Laravel 13, MariaDB, Blade / Tailwind CSS). Supports Bearer Token authorization powered by Laravel Sanctum.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Local / Docker application server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "User registration, authentication, and token management"
+    },
+    {
+      "name": "Posts",
+      "description": "Blog posts and fishing articles"
+    },
+    {
+      "name": "Fishes",
+      "description": "Community fish catches gallery (Wasze połowy)"
+    },
+    {
+      "name": "Comments",
+      "description": "Customer reviews and store opinions (Opinie)"
+    },
+    {
+      "name": "Orders",
+      "description": "Custom equipment orders (Zamówienia)"
+    }
+  ],
+  "paths": {
+    "/api/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a new user account",
+        "description": "Registers a new user and returns an access token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Authenticate user and receive a Sanctum Bearer token",
+        "description": "Validates credentials and returns a new personal access token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/api/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Log out and revoke current access token",
+        "security": [{ "sanctumAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Logged out successfully"
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Retrieve authenticated user details",
+        "security": [{ "sanctumAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User profile data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated"
+          }
+        }
+      }
+    },
+    "/api/posts": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Retrieve blog posts",
+        "description": "Fetches blog posts in reverse chronological order with optional skip/take pagination.",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "description": "Number of records to skip",
+            "schema": { "type": "integer", "default": 0 }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "required": false,
+            "description": "Number of records to return (defaults to 4)",
+            "schema": { "type": "integer", "default": 4 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/posts/{id}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Retrieve a single blog post by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      }
+    },
+    "/api/fishes": {
+      "get": {
+        "tags": ["Fishes"],
+        "summary": "Retrieve all community fish catches",
+        "responses": {
+          "200": {
+            "description": "List of fish catches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fish"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Fishes"],
+        "summary": "Add a new fish catch",
+        "security": [{ "sanctumAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFishRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Fish catch created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fish"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/api/fishes/{id}": {
+      "get": {
+        "tags": ["Fishes"],
+        "summary": "Retrieve single fish catch details",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fish catch found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fish"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fish not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Fishes"],
+        "summary": "Update an existing fish catch",
+        "security": [{ "sanctumAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFishRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fish catch updated successfully"
+          },
+          "403": {
+            "description": "Unauthorized - only owner or admin can edit"
+          },
+          "404": {
+            "description": "Fish not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Fishes"],
+        "summary": "Delete a fish catch",
+        "security": [{ "sanctumAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fish catch deleted successfully"
+          },
+          "403": {
+            "description": "Unauthorized - only owner or admin can delete"
+          },
+          "404": {
+            "description": "Fish not found"
+          }
+        }
+      }
+    },
+    "/api/comments": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Retrieve all customer reviews",
+        "responses": {
+          "200": {
+            "description": "List of reviews",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Comment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Submit a customer review",
+        "security": [{ "sanctumAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comment created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/api/comments/{id}": {
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Update an existing review",
+        "security": [{ "sanctumAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment updated successfully"
+          },
+          "403": {
+            "description": "Unauthorized - only author or admin can update"
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Delete a review",
+        "security": [{ "sanctumAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment deleted successfully"
+          },
+          "403": {
+            "description": "Unauthorized - only author or admin can delete"
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Retrieve user equipment orders",
+        "security": [{ "sanctumAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "List of orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Orders"],
+        "summary": "Place an equipment order",
+        "security": [{ "sanctumAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order placed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sanctumAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Sanctum Token",
+        "description": "Enter your Sanctum token (paste only the raw token string, without 'Bearer ' prefix; Swagger UI adds 'Bearer ' automatically)"
+      }
+    },
+    "schemas": {
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["name", "email", "password", "password_confirmation"],
+        "properties": {
+          "name": { "type": "string", "example": "Jan Kowalski" },
+          "email": { "type": "string", "format": "email", "example": "jan.kowalski@example.com" },
+          "password": { "type": "string", "format": "password", "example": "User123!" },
+          "password_confirmation": { "type": "string", "format": "password", "example": "User123!" }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "admin@fishing.pl" },
+          "password": { "type": "string", "format": "password", "example": "Admin123!" }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string", "example": "1|8Wv7zN0bL0j7..." },
+          "user": { "$ref": "#/components/schemas/User" },
+          "message": { "type": "string", "example": "Zalogowano pomyślnie." }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Michał Administrator" },
+          "email": { "type": "string", "example": "admin@fishing.pl" },
+          "status": { "type": "string", "enum": ["user", "admin"], "example": "admin" },
+          "created_at": { "type": "string", "example": "2024-06-16T15:33:25.000000Z" }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Najlepsze miejsca na wędkowanie" },
+          "short_description": { "type": "string", "example": "Odkryj najlepsze miejsca na spokojne wędkowanie." },
+          "content": { "type": "string", "example": "Dziś rano wstałem przed świtem..." },
+          "author": { "type": "string", "example": "Michał Muzyka" },
+          "image_link": { "type": "string", "example": "https://d1l57x9nwbbkz.cloudfront.net/files/s3fs-public/2022-01/fishing-beginners%20in%20Ontario.jpg" },
+          "created_at": { "type": "string", "example": "2021-10-12T13:24:53.000000Z" }
+        }
+      },
+      "Fish": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "user_id": { "type": "integer", "example": 1 },
+          "location": { "type": "string", "example": "Jezioro Śniardwy" },
+          "fish_species": { "type": "string", "example": "Szczupak" },
+          "catch_weight": { "type": "number", "format": "float", "example": 4.8 },
+          "catch_date": { "type": "string", "format": "date", "example": "2024-05-12" },
+          "photo_path": { "type": "string", "example": "https://images.unsplash.com/photo-1544947950-fa07a98d237f" },
+          "user": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "CreateFishRequest": {
+        "type": "object",
+        "required": ["location", "fish_species", "catch_weight", "catch_date"],
+        "properties": {
+          "location": { "type": "string", "example": "Zalew Zegrzyński" },
+          "fish_species": { "type": "string", "example": "Sandacz" },
+          "catch_weight": { "type": "number", "format": "float", "example": 3.75 },
+          "catch_date": { "type": "string", "format": "date", "example": "2024-06-15" },
+          "photo_path": { "type": "string", "example": "https://images.unsplash.com/photo-1544947950-fa07a98d237f" }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "user_id": { "type": "integer", "example": 1 },
+          "message": { "type": "string", "example": "Super sklep wędkarski. Bardzo miła i fachowa obsługa!" },
+          "created_at": { "type": "string", "example": "2024-06-16T15:33:25.000000Z" },
+          "user": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "CreateCommentRequest": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": { "type": "string", "example": "Wspaniały wybór wędzisk i kołowrotków karpiowych. Polecam!" }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "user_id": { "type": "integer", "example": 1 },
+          "selectedProducts": { "type": "string", "example": "Wędka spinningowa 2.7m, Kołowrotek 3000, Plecionka 0.14mm" },
+          "paymentMethod": { "type": "string", "enum": ["card", "cash"], "example": "card" },
+          "city": { "type": "string", "example": "Warszawa" },
+          "postal_code": { "type": "string", "example": "00-001" },
+          "age": { "type": "integer", "example": 28 },
+          "street": { "type": "string", "example": "Marszałkowska" },
+          "houseNumber": { "type": "string", "example": "10/12" },
+          "created_at": { "type": "string", "example": "2024-07-01T12:00:00.000000Z" }
+        }
+      },
+      "CreateOrderRequest": {
+        "type": "object",
+        "required": ["selectedProducts", "paymentMethod", "city", "postal_code", "age", "street", "houseNumber"],
+        "properties": {
+          "selectedProducts": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["Wędka karpiowa 3.6m", "Sygnalizator brań"]
+          },
+          "paymentMethod": { "type": "string", "enum": ["card", "cash"], "example": "card" },
+          "city": { "type": "string", "example": "Gdańsk" },
+          "postal_code": { "type": "string", "example": "80-001" },
+          "age": { "type": "integer", "example": 32 },
+          "street": { "type": "string", "example": "Długa" },
+          "houseNumber": { "type": "string", "example": "15" }
+        }
+      }
+    }
+  }
+}

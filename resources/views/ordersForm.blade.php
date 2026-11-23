@@ -14,27 +14,29 @@
 
     <style>
         body {
-            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            flex: 1 0 auto;
         }
 
         footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #f8f9fa; 
-            padding: 10px;
-            text-align: center;
+            margin-top: auto;
         }
     </style>
 
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     @include('layouts.navbar')
 
     <!-- Main Content -->
-	<main class="mb-4">
+	<main class="mb-4 flex-grow-1">
 		<div class="container px-4 px-lg-5 mt-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
 
@@ -101,6 +103,41 @@
                                 </ul>
                             </div>
                         @endif
+
+                        <!-- Orders List -->
+                        <div class="mt-5 pt-4 border-top">
+                            <h3 class="mb-3">Twoje złożone zamówienia</h3>
+                            @if(isset($orders) && count($orders) > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped align-middle">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Data</th>
+                                                <th>Produkty</th>
+                                                <th>Płatność</th>
+                                                <th>Adres dostawy</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($orders as $order)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $order->created_at ? (is_string($order->created_at) ? $order->created_at : $order->created_at->format('Y-m-d H:i')) : '-' }}</td>
+                                                    <td>{{ $order->selectedProducts }}</td>
+                                                    <td>{{ $order->paymentMethod == 'card' ? 'Karta' : 'Gotówka' }}</td>
+                                                    <td>{{ $order->street }} {{ $order->houseNumber }}, {{ $order->postal_code }} {{ $order->city }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="alert alert-info">
+                                    Nie posiadasz jeszcze żadnych złożonych zamówień.
+                                </div>
+                            @endif
+                        </div>
 
                     @else
                         <p>Proszę się zalogować, aby złożyć zamówienie.</p>
