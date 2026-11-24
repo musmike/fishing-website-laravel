@@ -8,10 +8,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 describe('Laravel Project Architecture & Spec Validation Tests', () => {
-  const projectRoot = path.join(__dirname, '..');
+  const appRoot = path.join(__dirname, '..');
+  const repoRoot = fs.existsSync(path.join(__dirname, '../../docs/swagger.json'))
+    ? path.join(__dirname, '../..')
+    : appRoot;
+
+  const getSwaggerPath = () => {
+    return fs.existsSync(path.join(repoRoot, 'docs/swagger.json'))
+      ? path.join(repoRoot, 'docs/swagger.json')
+      : path.join(appRoot, 'docs/swagger.json');
+  };
+
+  const getEnvExamplePath = () => {
+    return fs.existsSync(path.join(repoRoot, '.env.example'))
+      ? path.join(repoRoot, '.env.example')
+      : path.join(appRoot, '.env.example');
+  };
 
   it('should have a valid OpenAPI 3.0 specification file in docs/', () => {
-    const swaggerPath = path.join(projectRoot, 'docs/swagger.json');
+    const swaggerPath = getSwaggerPath();
     assert.ok(fs.existsSync(swaggerPath), 'docs/swagger.json must exist');
     const spec = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
     assert.match(spec.openapi, /^3\.0\./, 'Must be OpenAPI 3.0.x');
@@ -19,7 +34,7 @@ describe('Laravel Project Architecture & Spec Validation Tests', () => {
   });
 
   it('should define all core REST API endpoints in swagger.json', () => {
-    const swaggerPath = path.join(projectRoot, 'docs/swagger.json');
+    const swaggerPath = getSwaggerPath();
     const spec = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
     const paths = Object.keys(spec.paths);
 
@@ -33,7 +48,7 @@ describe('Laravel Project Architecture & Spec Validation Tests', () => {
   });
 
   it('should configure Sanctum Bearer authorization in OpenAPI spec', () => {
-    const swaggerPath = path.join(projectRoot, 'docs/swagger.json');
+    const swaggerPath = getSwaggerPath();
     const spec = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
     assert.ok(spec.components.securitySchemes.sanctumAuth, 'Must define sanctumAuth');
     assert.strictEqual(spec.components.securitySchemes.sanctumAuth.scheme, 'bearer');
@@ -49,13 +64,13 @@ describe('Laravel Project Architecture & Spec Validation Tests', () => {
       'SwaggerController.php'
     ];
     for (const ctrl of controllers) {
-      const p = path.join(projectRoot, 'app/Http/Controllers', ctrl);
+      const p = path.join(appRoot, 'app/Http/Controllers', ctrl);
       assert.ok(fs.existsSync(p), `Controller ${ctrl} must exist`);
     }
   });
 
   it('should have seeder with users, posts, comments, fishes, and orders', () => {
-    const seederPath = path.join(projectRoot, 'database/seeders/DatabaseSeeder.php');
+    const seederPath = path.join(appRoot, 'database/seeders/DatabaseSeeder.php');
     assert.ok(fs.existsSync(seederPath), 'DatabaseSeeder.php must exist');
     const content = fs.readFileSync(seederPath, 'utf8');
 
@@ -68,7 +83,7 @@ describe('Laravel Project Architecture & Spec Validation Tests', () => {
   });
 
   it('should have .env and .env.example with matching database configuration', () => {
-    const envExamplePath = path.join(projectRoot, '.env.example');
+    const envExamplePath = getEnvExamplePath();
     assert.ok(fs.existsSync(envExamplePath), '.env.example must exist');
     const content = fs.readFileSync(envExamplePath, 'utf8');
     assert.ok(content.includes('DB_CONNECTION=mysql'), 'Must configure mysql connection');

@@ -1,13 +1,16 @@
 services:
   app:
     build:
-      context: .
+      context: ./app
       dockerfile: Dockerfile
     container_name: fishing_app
     ports:
       - "8000:80"
     volumes:
-      - .:/var/www/html
+      - ./app:/var/www/html
+      - ./docs:/var/www/html/docs:ro
+      - ./.env:/var/www/html/.env
+      - ./.env.example:/var/www/html/.env.example:ro
     depends_on:
       db:
         condition: service_healthy
